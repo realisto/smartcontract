@@ -1,0 +1,55 @@
+var colors = require('colors/safe');
+
+
+
+
+var Token = artifacts.require("Token_v1");
+var Campaign = artifacts.require("TokenCampaign");
+
+var issuer_addr = '0x09280db720fa5a3b7c08af4d1cff760f21b075d4';
+var trustee_addr = '0x863352e9b120686df29f3b5ad963ff53c4275934';
+
+var token_addr;
+var campaign_addr;
+
+function post_deploy(){
+	Token.at(token_addr)
+		.then(
+			function(instance){
+				instance.allow_generate(campaign_addr);			
+			});
+
+}
+
+module.exports = function(deployer, network, accounts) {
+	var issuer = issuer_addr;
+	var trustee = trustee_addr;
+	var controller = issuer;
+	var token_version = 1;
+
+	console.log(colors.black.bgYellow("The network is " + network));
+	
+
+	console.log("The token contract will be issued from address " + issuer);
+	console.log("Setting trustee address to " + trustee);
+	console.log("Setting campaign controller to " + controller);
+	console.log("## QUESTION: Is this correct [Yes/No]?");
+
+	deployer.deploy(Token,token_version)
+		.then(
+			function(){
+				token_addr = Token.address;
+				console.log(colors.yellow.bold("##! Token contract deployed at " + token_addr));
+				return deployer.deploy(Campaign, token_addr, trustee, issuer);})
+		.then(
+			function(){
+				campaign_addr = Campaign.address;
+				console.log(colors.yellow.bold("##! Campaign contract deployed at \n    " + campaign_addr));
+				console.log("Set token generator to contract's address..");
+				
+				post_deploy();
+				
+				
+				});
+			
+};
