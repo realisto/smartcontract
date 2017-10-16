@@ -47,11 +47,17 @@ geth --maxpeers 0 --port 30304 --networkid 22 --shh --rpc --rpcport 8545 --datad
 geth attach ipc://home/pm-master/.ethereum-private/geth.ipc
 
 
-
+    
 # start Mist and attach it to private network
 
 mist --rpc /home/pm-master/.ethereum-private/geth.ipc 	
 
+
+
+# genrate java wrapper for a smart contract
+solc <contract>.sol --bin --abi --optimize -o <output-dir>/
+
+web3j solidity generate /path/to/<smart-contract>.bin /path/to/<smart-contract>.abi -o /path/to/src/main/java -p com.your.organisation.name
 
 
 

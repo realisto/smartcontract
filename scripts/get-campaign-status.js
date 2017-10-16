@@ -17,8 +17,10 @@ module.exports = function(callback){
 	var team;
 	var tokenAddr;
 	var raised, available, generated;
-	
+	var rate;
 	var state;
+	var minc;
+	var isBonus;
 
 	
 	TokenCampaign.deployed().then(
@@ -30,25 +32,39 @@ module.exports = function(callback){
 			function(){
 				return Promise.all([
 				
-					campaign.tokenController.call().then(
-						(x)=>{controller = x}),
-				
-					campaign.trusteeVault.call().then(
+
+
+					//campaign.availableTokens.call().then(
+					//	(x)=>{available = x}),
+
+					//campaign.tokenController.call().then(
+					//	(x)=>{controller = x}),
+
+
+					
+					campaign.trusteeVaultAddr.call().then(
 						(x)=>{trustee = x}),
 
-					campaign.tokenAddress.call().then(
+					campaign.tokenAddr.call().then(
 						(x)=>{tokenAddr = x}),
 
-					campaign.TEAM_ADDR.call().then(
+					
+					campaign.teamVaultAddr.call().then(
 						(x)=>{team = x}),
 
-					campaign.availableTokens.call().then(
-						(x)=>{available = x}),
+					campaign.decimals.call().then(
+						(x)=>{decimals = x}),
 
-					campaign.availableTokens.call().then(
-						(x)=>{available = x}),
+					campaign.scale.call().then(
+						(x)=>{scale = x}),
 
-					campaign.tEnd.call().then(
+					campaign.minContribution.call().then(
+						(x)=>{minc = x/1000000000000000000}),
+
+					campaign.get_rate.call().then(
+						(x)=>{rate = x}),
+
+					campaign.tCampaignEnd.call().then(
 						(x)=>{tEnd = x}),
 
 					campaign.tokensGenerated.call().then(
@@ -56,7 +72,6 @@ module.exports = function(callback){
 
 					campaign.amountRaised.call().then(
 						(x)=>{raised = x/1000000000000000000}),
-
 
 					campaign.campaignState.call().then(
 						(x)=>{state = x})])
@@ -68,11 +83,13 @@ module.exports = function(callback){
 				console.log(" Parameters:")
 				console.log("   Controller: " + controller);
 				console.log("   Token: " + tokenAddr);
-				console.log("   Trustee: " + trustee);	
+				console.log("   Trustee: " + trustee)	;	
 				console.log("   Team: " + team);	
-				
-				console.log(" Available Tokens: " + available );
+				console.log(" scale:" + scale);
+				console.log(" decimals: " + decimals );
+				console.log(" min contribution: " + minc );
 				console.log(" Generated Tokens: " + generated );
+				console.log(" Current rate:" + rate);
 				console.log(" Funds raised: " + raised);
 				var secondsLeft = (tEnd - Date.now()/1000);
 				var minutesLeft = secondsLeft/60;
