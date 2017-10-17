@@ -20,9 +20,9 @@ contract TokenVault is Controlled {
 	using SafeMath for uint256;
 
 
-	struct benificiary{
-
-	}
+	//struct benificiary{
+//
+//	}
 
 	address campaignAddr;
 	uint256 tUnlock;
@@ -37,14 +37,14 @@ contract TokenVault is Controlled {
 
 	function TokenVault(
 		address _tokenAddress,
-	 	address _campaignAdress,
-	 	address _owner,
+	 	address _campaignAddress,
 	 	uint256 _tDuration,
 	 	uint8 _maxExtractions
 	 	) {
-			campaignAddr = _campaignAdress;
+			campaignAddr = _campaignAddress;
 			token = MiniMeToken(_tokenAddress);
 			tDuration = _tDuration;
+			maxExtractions = _maxExtractions;
 			tExtractionWindow = tDuration / maxExtractions;
 		}
 

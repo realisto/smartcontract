@@ -15,8 +15,16 @@ var bountyAddr = '0xE664F98e4929379b648A3D1733a2579ABafaAE20';
 var robotAddr = '0xF7Ab4F8212331f74c07F1351B456E562Da827Dbc';
 var opAddr = '0xE40213F88F577a58dc26990c71F45abCce4134c9';
 
+// in seconds
+var tLockDuration = 60 * 10;
+
+var maxExtractions = 4;
+
+
 var tokenAddr;
 var campaignAddr;
+
+
 
 function post_deploy(){
 	Token.at(tokenAddr)
@@ -46,6 +54,7 @@ module.exports = function(deployer, network, accounts) {
 	deployer.deploy(TokenFactory)
 		.then(
 			function(){
+				// deploy Token Factory contract
 				var tokenFactoryAddr = TokenFactory.address;
 				console.log(colors.yellow.bold("##! Token factory contract deployed at " + tokenFactoryAddr));
 				return deployer.deploy(Token, tokenFactoryAddr);})
@@ -65,13 +74,18 @@ module.exports = function(deployer, network, accounts) {
 			function(){
 				campaignAddr = Campaign.address;
 				console.log(colors.yellow.bold("##! Campaign contract deployed at \n    " + campaignAddr));
-				
+				return deployer.deploy(TokenVault,
+					tokenAddr,
+					campaignAddr,
+	 				tLockDuration,
+	 				maxExtractions);})
+		.then(
+			function(){
 				//console.log("Set token generator to contract's address..");
 				console.log("Performing post deploy actions...")
 					post_deploy();
-				
-				
-				});
+
+			});
 		
 			
 };
