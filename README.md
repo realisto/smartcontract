@@ -1,1 +1,1 @@
-# realisto-ico-token
+# ICO smart contract
