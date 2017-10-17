@@ -1,1 +1,1 @@
-# smartcontract
+# ICO smart contract
