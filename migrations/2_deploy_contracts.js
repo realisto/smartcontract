@@ -15,8 +15,8 @@ var bountyAddr = '0xE664F98e4929379b648A3D1733a2579ABafaAE20';
 var robotAddr = '0xF7Ab4F8212331f74c07F1351B456E562Da827Dbc';
 var opAddr = '0xE40213F88F577a58dc26990c71F45abCce4134c9';
 
-// in seconds
-var tLockDuration = 60 * 4;
+// in seconds        s    m    h    d   m 
+var tLockDuration = 60 * 60 * 24 * 30 * 6; //6 months
 
 
 // need them globaly

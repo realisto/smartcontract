@@ -134,11 +134,11 @@ contract TokenCampaign is Controlled{
 
   uint256 public tCampaignStart = 64060588800;
   
-  uint256 public tBonusStageEnd = 1 * 1 minutes;
-  uint256 public t_1st_StageEnd = 3 * 1 minutes;
-  uint256 public t_2nd_StageEnd = 5 * 1 minutes;
-  uint256 public t_3rd_StageEnd = 7 * 1 minutes;
-  uint256 public tCampaignEnd = 10 * 1 minutes;
+  uint256 public tBonusStageEnd = 7 * (1 days);
+  uint256 public t_1st_StageEnd = 14 * (1 days);
+  uint256 public t_2nd_StageEnd = 21 * (1 days);
+  uint256 public t_3rd_StageEnd = 28 * (1 days);
+  uint256 public tCampaignEnd = 35 * (1 days);
   uint256 public tFinalized = 64060588800;
 
   //////////////////////////////////////////////
@@ -401,7 +401,7 @@ contract TokenCampaign is Controlled{
   
     // during the bonus phase we require a minimal eth contribution 
     if ((now <= tBonusStageEnd) && 
-             (msg.value <= bonusMinContribution )){
+             (msg.value < bonusMinContribution )){
       revert();
     }      
 
