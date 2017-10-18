@@ -16,7 +16,7 @@ var robotAddr = '0xF7Ab4F8212331f74c07F1351B456E562Da827Dbc';
 var opAddr = '0xE40213F88F577a58dc26990c71F45abCce4134c9';
 
 // in seconds        s    m    h    d   m 
-var tLockDuration = 60 * 60 * 24 * 30 * 6; //6 months
+var tLockDuration = 60 * 60 * 24 * 30 * 12; //12 months
 
 
 // need them globaly

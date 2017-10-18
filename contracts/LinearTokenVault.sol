@@ -40,7 +40,7 @@ contract TokenVault is Controlled {
 	TokenCampaign campaign;
 	//uint256 tUnlock = 0;
 	uint256 tDuration;
-	uint256 tLock = 6 * 30 * (1 days); // 6 months
+	uint256 tLock = 12 * 30 * (1 days); // 12 months
 	MiniMeToken token;
 
 	uint256 extracted = 0;
