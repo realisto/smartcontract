@@ -22,21 +22,23 @@ pragma solidity ^0.4.13;
 /// Copyright 2017, Pavel Metelitsyn
 
 
-import "./MiniMeToken.sol";
+import "./RealistoToken.sol";
 import "./library.sol";
+import "./TokenCampaign.sol";
 
 
 
 // simple time locked vault allows controlled extraction of tokens during a period of time
 
 
-// Controlled is implemented in MiniMeToken.sol
+// Controlled is implemented in MiniMeToken.sol 
 contract TokenVault is Controlled {
 	using SafeMath for uint256;
 
 
-	address campaignAddr;
-	uint256 tUnlock = 0;
+	//address campaignAddr;
+	TokenCampaign campaign;
+	//uint256 tUnlock = 0;
 	uint256 tDuration;
 	MiniMeToken token;
 
@@ -53,20 +55,21 @@ contract TokenVault is Controlled {
 			require( _tDuration > 0);
 			tDuration = _tDuration;
 
-			campaignAddr = _campaignAddress;
-			token = MiniMeToken(_tokenAddress);
+			//campaignAddr = _campaignAddress;
+			token = RealistoToken(_tokenAddress);
+			campaign = TokenCampaign(_campaignAddress);
 		}
 
+	/// WE DONT USE IT ANYMORE
 	/// sale campaign calls this function to set the time lock
 	/// @param _tUnlock - Unix timestamp of the first date 
 	///							on which tokens become available
-	function setTimeLock(uint256 _tUnlock){
+	//function setTimeLock(uint256 _tUnlock){
 		// prevent change of the timestamp by anybody other than token sale contract
 		// once unlock time is set it cannot be changed
-		require( (msg.sender == campaignAddr) &&
-						 (tUnlock == 0));
-		tUnlock = _tUnlock;
-	}
+		//require( (msg.sender == campaignAddr) && (tUnlock == 0));
+	//	tUnlock = _tUnlock;
+	//}
 
 	/// @notice Send all available tokens to a given address
 	function extract(address _to) onlyController {
@@ -90,14 +93,18 @@ contract TokenVault is Controlled {
 		return token.balanceOf(address(this));
 	}
 
+	function get_unlock_time() returns (uint256){
+		return campaign.tFinalized() + (2 * (1 minutes));
+	}
 
 	// returns amount of tokens available for extraction now
 	function availableNow() returns (uint256){
-
+		
+		uint256 tUnlock = get_unlock_time();
 		uint256 tNow = now;
 
 		// if before unlock time or unlock time is not set  => 0 is available 
-		if (tNow < tUnlock && tUnlock == 0) { return 0; }
+		if (tNow < tUnlock ) { return 0; }
 
 		uint256 remaining = balance();
 
@@ -107,9 +114,9 @@ contract TokenVault is Controlled {
 		// otherwise:
 		// compute how many extractions remaining based on time
 
-		// time delta
-		uint256 dt = (tNow.sub(tUnlock)).div(tDuration);
-		return (remaining.add(extracted)).mul(dt).sub(extracted);
+			// time delta
+		uint256 t = (tNow.sub(tUnlock)).mul(remaining.add(extracted));
+		return (t.div(tDuration)).sub(extracted);
 	}
 
 }

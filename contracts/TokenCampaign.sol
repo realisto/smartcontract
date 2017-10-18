@@ -135,10 +135,11 @@ contract TokenCampaign is Controlled{
   uint256 public tCampaignStart = 64060588800;
   
   uint256 public tBonusStageEnd = 1 * 1 minutes;
-  uint256 public t_1st_StageEnd = 120 * 1 minutes;
-  uint256 public t_2nd_StageEnd = 180 * 1 minutes;
-  uint256 public t_3rd_StageEnd = 240 * 1 minutes;
-  uint256 public tCampaignEnd = 6 * 1 hours;
+  uint256 public t_1st_StageEnd = 3 * 1 minutes;
+  uint256 public t_2nd_StageEnd = 5 * 1 minutes;
+  uint256 public t_3rd_StageEnd = 7 * 1 minutes;
+  uint256 public tCampaignEnd = 10 * 1 minutes;
+  uint256 public tFinalized = 64060588800;
 
   //////////////////////////////////////////////
   //
@@ -262,6 +263,8 @@ contract TokenCampaign is Controlled{
   function setTeamAddr(address _newTeamAddr) onlyController {
      require( campaignState > 2 && _newTeamAddr != 0x0 );
      teamVaultAddr = _newTeamAddr;
+    
+     teamVault = TokenVault(teamVaultAddr);
   }
  
 
@@ -331,33 +334,42 @@ contract TokenCampaign is Controlled{
       /// only if sale was closed or 48 hours have passed since campaign end
       /// we leave this time to complete possibly pending orders
       /// from offchain contributions 
+      
       require ( (campaignState == 1) ||
-                ((campaignState != 0) && (now > tCampaignEnd + (48 hours))));
+                ((campaignState != 0) && (now > tCampaignEnd + (1 minutes))));
       
       campaignState = 0;
 
-      // prevent further token generation
-      token.finalize();     
+     
 
       // forward funds to the trustee 
       // since we forward a fraction of the incomming ether on every contribution
       // 'amountRaised' IS NOT equal to the contract's balance
       // we use 'this.balance' instead
+
       trusteeVaultAddr.transfer(this.balance);
       
-      // generate bounty tokens 
+      
       uint256 bountyTokens = (tokensGenerated.mul(PRCT_BOUNTY)).div(100);
-      require( do_grant_tokens(bountyVaultAddr, bountyTokens) ); 
-
-      // generate team tokens
+      
       uint256 teamTokens = (tokensGenerated.mul(PRCT_TEAM)).div(100);
       
+      // generate bounty tokens 
+      assert( do_grant_tokens(bountyVaultAddr, bountyTokens) );
+      // generate team tokens
       // time lock team tokens before transfer
-      teamVault = TokenVault(teamVaultAddr);
-      teamVault.setTimeLock( tCampaignEnd + 6 * (30 days));   
-      // generate all the tokens
-      require( do_grant_tokens(teamVaultAddr, teamTokens) );
       
+      // we dont use it anymore
+      //teamVault.setTimeLock( tCampaignEnd + 6 * (6 minutes));  
+      
+      tFinalized = now;
+
+      // generate all the tokens
+      assert( do_grant_tokens(teamVaultAddr, teamTokens) );
+      
+      // prevent further token generation
+      token.finalize();     
+
       // notify the world
       Finalized();
    }

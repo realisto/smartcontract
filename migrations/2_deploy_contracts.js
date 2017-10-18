@@ -4,7 +4,7 @@ var colors = require('colors/safe');
 var Token = artifacts.require("RealistoToken");
 var Campaign = artifacts.require("TokenCampaign");
 var TokenFactory = artifacts.require("MiniMeTokenFactory");
-var TokenVault = artifacts.require("LinearTokenVault");
+var TokenVault = artifacts.require("TokenVault");
 
 // addresses in our private test net
 // CHANGE before deploy
@@ -16,7 +16,7 @@ var robotAddr = '0xF7Ab4F8212331f74c07F1351B456E562Da827Dbc';
 var opAddr = '0xE40213F88F577a58dc26990c71F45abCce4134c9';
 
 // in seconds
-var tLockDuration = 60 * 10;
+var tLockDuration = 60 * 4;
 
 
 // need them globaly
