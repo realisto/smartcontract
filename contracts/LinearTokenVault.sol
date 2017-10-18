@@ -28,21 +28,12 @@ import "./library.sol";
 
 
 // simple time locked vault allows controlled extraction of tokens during a period of time
-// at construction we pass the duration and number of extractions
-// 
-//
-//
-
 
 
 // Controlled is implemented in MiniMeToken.sol
 contract TokenVault is Controlled {
 	using SafeMath for uint256;
 
-
-	//struct benificiary{
-//
-//	}
 
 	address campaignAddr;
 	uint256 tUnlock = 0;
@@ -114,10 +105,9 @@ contract TokenVault is Controlled {
 		if (tNow > tUnlock + tDuration) { return remaining; }
 
 		// otherwise:
-		// compute how many extractions remaining based on time 
+		// compute how many extractions remaining based on time
 
-
-
+		// time delta
 		uint256 dt = (tNow.sub(tUnlock)).div(tDuration);
 		return (remaining.add(extracted)).mul(dt).sub(extracted);
 	}
