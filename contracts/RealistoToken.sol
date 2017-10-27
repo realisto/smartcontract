@@ -28,7 +28,7 @@ contract RealistoToken is MiniMeToken {
       0x0,
       0,
       "name of our token",
-      3, // decimals
+      18, // decimals
       "symbol of our token",
       // SHOULD TRANSFERS BE ENABLED? -- NO
       false){
