@@ -12,15 +12,15 @@ var stateNames = ["finalized, not accepting funds",
 
 module.exports = function(callback){
 	var campaign;
-	var controller;
-	var trustee;
-	var team;
+	var bonusThreshold,goal;
+	var trustee, op, bounty, team;
 	var tokenAddr;
 	var raised, available, generated;
 	var rate;
 	var state;
 	var minc;
-	var isBonus;
+	var isPaused;
+	var tEnd, presaleEnd;
 
 	
 	TokenCampaign.deployed().then(
@@ -31,24 +31,34 @@ module.exports = function(callback){
 		.then(
 			function(){
 				return Promise.all([
-				
 
+					campaign.bonusTokenThreshold.call().then(
+						(x)=>{bonusThreshold = x}),
 
-					//campaign.availableTokens.call().then(
-					//	(x)=>{available = x}),
+					campaign.bountyVaultAddr.call().then(
+						(x)=>{bounty = x}),
 
-					//campaign.tokenController.call().then(
-					//	(x)=>{controller = x}),
+					campaign.opVaultAddr.call().then(
+						(x)=>{op = x}),
 
+					campaign.robotAddr.call().then(
+						(x)=>{robot = x}),
 
-					
 					campaign.trusteeVaultAddr.call().then(
 						(x)=>{trustee = x}),
 
 					campaign.tokenAddr.call().then(
 						(x)=>{tokenAddr = x}),
 
+					campaign.paused.call().then(
+						(x)=>{isPaused = x}),
 					
+					campaign.get_presale_goal.call().then(
+						(x)=>{goal = x}),
+
+					campaign.tBonusStageEnd.call().then(
+						(x)=>{presaleEnd = x}),
+
 					campaign.teamVaultAddr.call().then(
 						(x)=>{team = x}),
 
@@ -80,21 +90,32 @@ module.exports = function(callback){
 			function(){
 
 				console.log(colors.white.bold("# Campaign State: " + state + " - (" + stateNames[state] +")"));
+				console.log(" Paused: " + isPaused);
 				console.log(" Parameters:")
-				console.log("   Controller: " + controller);
 				console.log("   Token: " + tokenAddr);
+				console.log("      Decimals: " + decimals );
+				console.log("      Scale:" + scale);
+				console.log("   Robot: " + robot)	;	
 				console.log("   Trustee: " + trustee)	;	
+				console.log("   Bounty: " + bounty);
 				console.log("   Team: " + team);	
-				console.log(" scale:" + scale);
-				console.log(" decimals: " + decimals );
-				console.log(" min contribution: " + minc );
-				console.log(" Generated Tokens: " + generated );
-				console.log(" Current rate:" + rate);
-				console.log(" Funds raised: " + raised);
-				var secondsLeft = (tEnd - Date.now()/1000);
+				console.log("   Bounty: " + bounty);
+				
+				console.log(" Presale threshold: " + bonusThreshold/scale );
+				var secondsLeft = (presaleEnd - Date.now()/1000);
 				var minutesLeft = secondsLeft/60;
 				var hoursLeft = minutesLeft/60
-				console.log(" Ends in: " + tEnd + " (" + (tEnd - Date.now()/1000) + " = " + minutesLeft + " minutes )" );
+				console.log(" Presale ends: " + presaleEnd + "( in " + minutesLeft + " minutes)" );
+				console.log(" Presale goal reached: " + goal);
+
+				console.log(" Min contribution: " + minc );
+				console.log(" Generated Tokens: " + generated/scale );
+				console.log(" Current rate:" + rate/scale);
+				console.log(" Funds raised: " + raised);
+				secondsLeft = (tEnd - Date.now()/1000);
+				minutesLeft = secondsLeft/60;
+				hoursLeft = minutesLeft/60
+				console.log(" Ends : " + tEnd + " (" + (tEnd - Date.now()/1000) + " = " + minutesLeft + " minutes )" );
 
 				//console.log("   Allow generate: " + allowGen);	
 			});  		

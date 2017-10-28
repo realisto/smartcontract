@@ -24,8 +24,9 @@ module.exports = function(callback){
 	TokenCampaign.deployed().then(
 		function(instance){
 			console.log(colors.red("# Campaign at " + instance.address))
+			console.log(colors.red("pause sale"))
 			campaign = instance;
-			return campaign.startSale()})
+			return campaign.pauseSale()})
 		.then(
 			function(returnCode){
 				

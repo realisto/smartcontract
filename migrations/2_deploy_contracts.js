@@ -17,22 +17,13 @@ var opAddr = '0xE40213F88F577a58dc26990c71F45abCce4134c9';
 
 // in seconds        s    m    h    d   m 
 var tLockDuration = 60 * 60 * 24 * 30 * 12; //12 months
+//var tLockDuration = 60 * 30; // 30 minutes for testing
 
 
 // need them globaly
 var tokenAddr;
 var campaignAddr;
 var teamAddr;
-
-
-
-
-function post_deploy(){
-	Token.at(tokenAddr)
-		.then(
-			function(instance){
-				instance.setGenerateAddr(campaignAddr);			
-			});}
 
 
 module.exports = function(deployer, network, accounts) {
@@ -79,7 +70,7 @@ module.exports = function(deployer, network, accounts) {
 		.then(
 			function(){
 				teamAddr = TokenVault.address;
-				//console.log("Set token generator to contract's address..");
+				console.log(colors.yellow.bold("##! TeamVault contract deployed at \n    " + teamAddr));
 				console.log("Performing post deploy actions...")
 			  
 			  Token.at(tokenAddr).then(

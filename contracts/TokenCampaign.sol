@@ -46,22 +46,22 @@ contract TokenCampaign is Controlled{
   // percent of ETH going to operational account
   uint256 public constant PRCT_ETH_OP = 10;
 
-  
-  // CAUTION these 'constants' are adjusted at runtime 
-  // by a scale factor = 10 ** decimals
+  uint8 public constant decimals = 18;
+  uint256 public constant scale = (uint256(10) ** decimals);
+
 
   // how many tokens for one ETH
   // we may adjust this number before deployment based on the market conditions
-  uint256 public constant baseRate = 300; 
+  uint256 public constant baseRate = 300; //<-- unscaled
 
-  // ******** new ********/
   // we want to limit the number of available tokens during the bonus stage 
   // payments during the bonus stage will not be accepted after the TokenTreshold is reached or exceeded
   // we may adjust this number before deployment based on the market conditions
-  uint256 public constant bonusTokenThreshold = 7647120; //<--- new 
+
+  uint256 public constant bonusTokenThreshold = 7647120 * scale ; //<--- new 
 
   // minmal contribution, Wei
-  uint256 public constant minContribution = (1 ether) / 100;
+  uint256 public constant minContribution = (5 ether) / 100;
 
   // bonus structure, Wei
   uint256 public constant bonusMinContribution = (5 ether);
@@ -94,16 +94,7 @@ contract TokenCampaign is Controlled{
   // adress of our token
   address public tokenAddr;
 
-  // decimals of our Token
-  // constructor will pull the right value from the token
-  uint8 public decimals;// = 18;
-  
-  // scale factor for rate and bonuses 
-  // depends on decimals i.e. 
-  // scale = (uint256(10) ** decimals);
-  // we set it at deployment time
-  uint256 public scale;
-  
+
   // address of our bitcoin payment processing robot
   // the robot is allowed to generate tokens without
   // sending ether
@@ -125,8 +116,7 @@ contract TokenCampaign is Controlled{
   uint8 public campaignState = 4; 
   bool public paused = false;
 
-  // keeps track of tokens generated so far
-  // @check the implementation ensures amountGenerated <= availableTokens
+  // keeps track of tokens generated so far, scaled value
   uint256 public tokensGenerated = 0;
 
   // total Ether raised (= Ether paid into the contract)
@@ -141,7 +131,7 @@ contract TokenCampaign is Controlled{
   uint256 public tCampaignStart = 64060588800;
   uint256 public tBonusStageEnd = 7 * (1 days);
   uint256 public t_1st_StageEnd = 14 * (1 days);
-  uint256 public t_2nd_StageEnd = 21 * (1 days);
+  uint256 public t_2nd_StageEnd = 21* (1 days);
   uint256 public t_3rd_StageEnd = 28 * (1 days);
   uint256 public tCampaignEnd = 35 * (1 days);
   uint256 public tFinalized = 64060588800;
@@ -166,10 +156,10 @@ contract TokenCampaign is Controlled{
   event CampaignClosed(uint256);
   event CampaignPausd(uint256);
   event CampaignResumed(uint256);
-  event TokenGranted(address backer, uint amount, string ref);
-  event TokenGranted(address backer, uint amount);
+  event TokenGranted(address indexed backer, uint amount, string ref);
+  event TokenGranted(address indexed backer, uint amount);
   event TotalRaised(uint raised);
-  event Finalized();
+  event Finalized(uint256);
   event ClaimedTokens(address indexed _token, address indexed _controller, uint _amount);
  
 
@@ -201,16 +191,21 @@ contract TokenCampaign is Controlled{
     token = rea_token_interface(tokenAddr);
    
     // adjust 'constants' for decimals used
-    decimals = token.decimals(); // should be 18
-    scale = (uint256(10) ** decimals);
-
+    // decimals = token.decimals(); // should be 18
+   
   }
 
 
   //////////////////////////////////////////////////
   ///
   /// Functions that do not change contract state
-
+  function get_presale_goal() constant returns (bool){
+    if ((now <= tBonusStageEnd) && (tokensGenerated >= bonusTokenThreshold)){
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   /// @notice computes the current rate
   ///  according to time passed since the start
@@ -288,7 +283,7 @@ contract TokenCampaign is Controlled{
     t_3rd_StageEnd += tNow;
     tCampaignEnd += tNow;
 
-   // CampaignOpen(now);
+    CampaignOpen(now);
   }
 
 
@@ -320,7 +315,7 @@ contract TokenCampaign is Controlled{
     require( campaignState  == 2 );
     campaignState = 1;
 
-  //  CampaignClosed(now);
+    CampaignClosed(now);
   }   
 
 
@@ -329,7 +324,7 @@ contract TokenCampaign is Controlled{
   ///   Get funds out, generates team, bounty and reserve tokens
   function finalizeCampaign() public {     
       
-      /// only if sale was closed or 48 hours have passed since campaign end
+      /// only if sale was closed or 48 hours = 2880 minutes have passed since campaign end
       /// we leave this time to complete possibly pending orders
       /// from offchain contributions 
       
@@ -369,7 +364,7 @@ contract TokenCampaign is Controlled{
       token.finalize();     
 
       // notify the world
-      Finalized();
+      Finalized(tFinalized);
    }
 
 
@@ -399,8 +394,8 @@ contract TokenCampaign is Controlled{
   
     // during the bonus phase we require a minimal eth contribution 
     if ((now <= tBonusStageEnd) && 
-        (msg.value < bonusMinContribution ) &&
-        (tokensGenerated >= bonusTokenThreshold)) //<--- new, revert if bonusThreshold is exceeded 
+        ((msg.value < bonusMinContribution ) ||
+        (tokensGenerated >= bonusTokenThreshold))) //<--- new, revert if bonusThreshold is exceeded 
     {
       revert();
     }      

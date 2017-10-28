@@ -19,9 +19,10 @@ module.exports = function(callback){
 						vault.get_unlock_time.call().then((x)=>{tulock = x;}),
 						vault.availableNow.call().then((x)=>{avail = x;})])})
 		.then(function(){
-				console.log(" balance: " + bal );
-				console.log(" available: " + avail );
-				console.log(" time lock: " + tulock)
+				console.log(" balance: " + bal/1000000000000000000 );
+				console.log(" available: " + avail/1000000000000000000);
+				console.log(" time lock: " + tulock + "( in " + (tulock - Date.now()/1000)/60 + " minutes)");
+			///	console.log(" time now: " Date.now());
 		});
 } 	
 
