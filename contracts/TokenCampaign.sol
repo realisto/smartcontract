@@ -279,6 +279,7 @@ contract TokenCampaign is Controlled{
     // assume timestamps will not cause overflow
     tCampaignStart = tNow;
     tBonusStageEnd += tNow;
+    tRegSaleStart += tNow;
     t_1st_StageEnd += tNow;
     t_2nd_StageEnd += tNow;
     t_3rd_StageEnd += tNow;
