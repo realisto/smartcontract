@@ -2,7 +2,7 @@
 
 ## Goals
 
-The REA Token schould work as an entry to the now-in-development Realisto real estate investment platform. A part (10%) of the funds raised in the ICO will be used for completing the final stage of the platform development while the rest (90%) will be used for initial investments in real estate market.    
+The REA Token works as an entry to the upcoming Realisto real estate investment platform. A part (10%) of the funds raised in the ICO will be used for completing the final stage of the platform development while the rest (90%) will be used for initial investments in real estate market.    
 
 ## Terms
 
