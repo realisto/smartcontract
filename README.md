@@ -31,7 +31,7 @@ Addditionaly bonuses apply according to the following scheme
 Contributions from token exchange wallets, MultiSig wallets and other smart contracts are not supported. 
 
 The address sending ETH to the Crowdsale contract will receive the REA tokens.
-The REA tokens are not transferrable during the ICO. Transfers will be enabled by us within one weeks after the ICO ends.
+The REA tokens are not transferrable during the ICO. Transfers will be enabled by us within one week after the ICO ends.
 
 We also offer the possibility to contribute by sending BTC to a unique (per contribution) bitcoin address. We have a payment processing system that can generate BTC contribution addresses on demand, track payments and trigger REA token generation via corresponding functionality of the Crowdsale contract. All operations are logged to ensure transparency. Note that an Ethereum Wallet is required in any case. 
 
