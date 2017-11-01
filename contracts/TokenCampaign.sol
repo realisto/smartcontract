@@ -130,10 +130,11 @@ contract TokenCampaign is Controlled{
   // set to midnight of saturday January 1st, 4000
   uint256 public tCampaignStart = 64060588800;
   uint256 public tBonusStageEnd = 7 * (1 days);
-  uint256 public t_1st_StageEnd = 14 * (1 days);
-  uint256 public t_2nd_StageEnd = 21* (1 days);
-  uint256 public t_3rd_StageEnd = 28 * (1 days);
-  uint256 public tCampaignEnd = 35 * (1 days);
+  uint256 public tRegSaleStart = 8 * (1 days);
+  uint256 public t_1st_StageEnd = 15 * (1 days);
+  uint256 public t_2nd_StageEnd = 22* (1 days);
+  uint256 public t_3rd_StageEnd = 29 * (1 days);
+  uint256 public tCampaignEnd = 38 * (1 days);
   uint256 public tFinalized = 64060588800;
 
   //////////////////////////////////////////////
@@ -391,7 +392,13 @@ contract TokenCampaign is Controlled{
          && (now <= tCampaignEnd)   // within time window
          && (paused == false));     // not on hold
       
-  
+
+    // contributions are not possible before regular sale starts 
+    if ( (now > tBonusStageEnd) && //<--- new
+         (now < tRegSaleStart)){ //<--- new
+      revert(); //<--- new
+    }
+
     // during the bonus phase we require a minimal eth contribution 
     if ((now <= tBonusStageEnd) && 
         ((msg.value < bonusMinContribution ) ||
@@ -400,6 +407,7 @@ contract TokenCampaign is Controlled{
       revert();
     }      
 
+    
   
     // otherwise we check that Eth sent is sufficient to generate at least one token
     // though our token has decimals we don't want nanocontributions

@@ -17,7 +17,7 @@ contract RealistoToken is MiniMeToken {
 
   modifier mayGenerate() {
     require ( (msg.sender == mayGenerateAddr) &&
-              (tokenGenerationEnabled == true)); //<- added after first audit
+              (tokenGenerationEnabled == true) ); //<- added after first audit
     _;
   }
 
@@ -38,12 +38,8 @@ contract RealistoToken is MiniMeToken {
   }
 
   function setGenerateAddr(address _addr) onlyController{
-    /// we set 'mayGenerateAddr' to 0x0 in 'finalize()'
-    /// the following line enures that once the token is finalized
-    /// nobody can ever generate new tokens 
-    require(( mayGenerateAddr != 0x0) &&
-            (_addr != 0x0));
-
+    // we can appoint an address to be allowed to generate tokens
+    require( _addr != 0x0 );
     mayGenerateAddr = _addr;
   }
 
@@ -83,7 +79,6 @@ contract RealistoToken is MiniMeToken {
   // permanently disables generation of new tokens
   function finalize() mayGenerate {
     tokenGenerationEnabled = false; //<- added after first audit
-    mayGenerateAddr = 0x0;
     checkpointBlock = block.number;
   }  
 }
