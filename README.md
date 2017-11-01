@@ -1,4 +1,4 @@
-# ICO smart contract
+# REALISTO ICO smart contract
 
 ## Goals
 
