@@ -4,6 +4,8 @@
 
 The REA Token works as an entry to the upcoming Realisto real estate investment platform. A part (10%) of the funds raised in the ICO will be used for completing the final stage of the platform development while the rest (90%) will be used for initial investments in real estate market.    
 
+For more Information and Whitepaper visit www.realisto.io
+
 ## Terms
 
 The ICO campaign will last 5 weeks. The first week is a "pre-sale" week. During the presale we want to attract larger-than-average investors by offering a solid bonus in exchange for a minimal contribution. The REA tokens are not transferrable during the ICO. Transfers will be enabled by us within one week after the ICO ends.
